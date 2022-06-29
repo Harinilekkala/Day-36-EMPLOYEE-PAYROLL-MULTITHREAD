@@ -7,7 +7,7 @@ namespace EmployeePayrollTesting
     {
         EmployeeRepo getMethod = new EmployeeRepo();
         [TestMethod]
-        public void GivenMultipleEmployeeDetails_ShouldReturnTatalExecutionTime()
+        public void GivenMultipleEmployeeDetails_ShouldReturnTotalExecutionTime()
         {
             List<EmployeePayroll_Model> list = new List<EmployeePayroll_Model>();
             list.Add(new EmployeePayroll_Model(id: 0, name: "Harini", salary: 20000, startDate: new DateTime(2022, 06, 01), gender: "M", mobile: 9877065432, address: "Tirupur", department: "Developer", basicPay: 20000, deductions: 200, taxablePay: 500, netPay: 19500));
@@ -19,6 +19,13 @@ namespace EmployeePayrollTesting
             getMethod.AddMultipleEmployees(list);
             DateTime endTime = DateTime.Now;
             Console.WriteLine("Time Taken: " + (endTime - startTime));
+
+            Console.WriteLine("Time Taken without Threading: " + (endTime - startTime));
+
+            DateTime startTimewithThreading = DateTime.Now;
+            getMethod.AddEmployeesWithThreading(list);
+            DateTime endTimeWithThreading = DateTime.Now;
+            Console.WriteLine("Time Taken with Threading: " + (endTimeWithThreading - startTimewithThreading));
         }
     }
 }

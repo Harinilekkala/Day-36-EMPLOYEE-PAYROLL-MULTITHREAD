@@ -186,6 +186,10 @@ namespace EmployeePayroll_ADO
                 connection.Close();
             }
         }
+        
+        //Multi Threading Concept
+
+        // -------------This is Without Adding Multi Threading
         public void AddMultipleEmployees(List<EmployeePayroll_Model> model)
         {
             model.ForEach(data =>
@@ -193,6 +197,21 @@ namespace EmployeePayroll_ADO
                 Console.WriteLine("Employees being Added");
                 this.AddEmployee(data);
                 Console.WriteLine("Employees Added " + data.name);
+            });
+        }
+
+        //Adding Multi Threading
+        public void AddEmployeesWithThreading(List<EmployeePayroll_Model> model)
+        {
+            model.ForEach(data =>
+            {
+                Task thread = new Task(() =>
+                {
+                    Console.WriteLine("Employees being Added");
+                    this.AddEmployee(data);
+                    Console.WriteLine("Employees Added " + data.name);
+                });
+                thread.Start();
             });
         }
     }

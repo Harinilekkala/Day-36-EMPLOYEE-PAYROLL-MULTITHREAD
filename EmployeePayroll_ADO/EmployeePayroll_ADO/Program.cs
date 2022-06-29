@@ -62,6 +62,7 @@ namespace EmployeePayroll_ADO
                         getMethod.DeleteData();
                         break;
                     }
+
                 default:
                     {
                         Console.WriteLine("Enter a valid Number");
