@@ -42,7 +42,6 @@ namespace EmployeePayroll_ADO
             SqlConnection connection = new SqlConnection(connectionString);
             try
             {
-                
                 EmployeePayroll_Model model = new EmployeePayroll_Model(id: 0, name: null, salary: 0, startDate: DateTime.Now, gender: null,
                     mobile: 0, address: null, department: null, basicPay: 0, deductions: 0, taxablePay: 0, netPay: 0);
                 using (connection)
@@ -97,29 +96,32 @@ namespace EmployeePayroll_ADO
             SqlConnection connection = new SqlConnection(connectionString);
             try
             {
-                using (connection)
+                lock (this)
                 {
-                    SqlCommand command = new SqlCommand("SpAddEmployeeDetails", connection);
-                    command.CommandType = CommandType.StoredProcedure;
-                    command.Parameters.AddWithValue("@NAME", model.name);
-                    command.Parameters.AddWithValue("@SALARY", model.salary);
-                    command.Parameters.AddWithValue("@START_DATE", model.startDate);
-                    command.Parameters.AddWithValue("@GENDER", model.gender);
-                    command.Parameters.AddWithValue("@MOBILE", model.mobile);
-                    command.Parameters.AddWithValue("@ADDRESS", model.address);
-                    command.Parameters.AddWithValue("@DEPARTMENT", model.department);
-                    command.Parameters.AddWithValue("@BASIC_PAY", model.basicPay);
-                    command.Parameters.AddWithValue("@DEDUCTIONS", model.deductions);
-                    command.Parameters.AddWithValue("@TAXABLE_PAY", model.taxablePay);
-                    command.Parameters.AddWithValue("@NET_PAY", model.netPay);
-                    connection.Open();
-                    var result = command.ExecuteNonQuery();
-                    connection.Close();
-                    if (result != 0)
+                    using (connection)
                     {
-                        return true;
+                        SqlCommand command = new SqlCommand("SpAddEmployeeDetails", connection);
+                        command.CommandType = CommandType.StoredProcedure;
+                        command.Parameters.AddWithValue("@NAME", model.name);
+                        command.Parameters.AddWithValue("@SALARY", model.salary);
+                        command.Parameters.AddWithValue("@START_DATE", model.startDate);
+                        command.Parameters.AddWithValue("@GENDER", model.gender);
+                        command.Parameters.AddWithValue("@MOBILE", model.mobile);
+                        command.Parameters.AddWithValue("@ADDRESS", model.address);
+                        command.Parameters.AddWithValue("@DEPARTMENT", model.department);
+                        command.Parameters.AddWithValue("@BASIC_PAY", model.basicPay);
+                        command.Parameters.AddWithValue("@DEDUCTIONS", model.deductions);
+                        command.Parameters.AddWithValue("@TAXABLE_PAY", model.taxablePay);
+                        command.Parameters.AddWithValue("@NET_PAY", model.netPay);
+                        connection.Open();
+                        var result = command.ExecuteNonQuery();
+                        connection.Close();
+                        if (result != 0)
+                        {
+                            return true;
+                        }
+                        return false;
                     }
-                    return false;
                 }
             }
             catch (Exception ex)
@@ -186,34 +188,27 @@ namespace EmployeePayroll_ADO
                 connection.Close();
             }
         }
-        
-        //Multi Threading Concept
-
-        // -------------This is Without Adding Multi Threading
         public void AddMultipleEmployees(List<EmployeePayroll_Model> model)
         {
             model.ForEach(data =>
             {
-                Console.WriteLine("Employees being Added");
                 this.AddEmployee(data);
                 Console.WriteLine("Employees Added " + data.name);
             });
         }
-
-        //Adding Multi Threading
         public void AddEmployeesWithThreading(List<EmployeePayroll_Model> model)
         {
             model.ForEach(data =>
             {
-                Task thread = new Task(() =>
+                Thread thread = new Thread(() =>
                 {
-                    Console.WriteLine("Employees being Added");
+                    Console.WriteLine("Thread Start Time: " + DateTime.Now);
                     this.AddEmployee(data);
-                    Console.WriteLine("Employees Added " + data.name);
+                    Console.WriteLine("Employee Added: " + data.name);
+                    Console.WriteLine("Thread End Time: " + DateTime.Now);
                 });
                 thread.Start();
             });
         }
     }
 }
-
