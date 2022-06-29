@@ -188,6 +188,9 @@ namespace EmployeePayroll_ADO
                 connection.Close();
             }
         }
+
+        // ------------------------Multi Threading Concept--------------------------
+        // without Adding multi threading
         public void AddMultipleEmployees(List<EmployeePayroll_Model> model)
         {
             model.ForEach(data =>
