@@ -29,7 +29,7 @@ namespace RESTSharp_Testing
             //Assert
             Assert.AreEqual(response.StatusCode, HttpStatusCode.OK);
             List<Employee> list = JsonConvert.DeserializeObject<List<Employee>>(response.Content);
-            Assert.AreEqual(30, list.Count);
+            Assert.AreEqual(44, list.Count);
             foreach (Employee data in list)
             {
                 Console.WriteLine("{0,-5}{1,-15}{2,-10}", data.id, data.name, data.salary);
@@ -76,6 +76,24 @@ namespace RESTSharp_Testing
                 Assert.AreEqual(body.salary, data.salary);
                 Console.WriteLine(response.Content);
             });
+        }
+        [TestMethod]
+        public void OnUpdatingEmployeeData_ShouldUpdateOnJsonServer()
+        {
+            client = new RestClient("http://localhost:4000");
+            //Arrange
+            RestRequest request = new RestRequest("/employees/34", Method.Put);
+            List<Employee> list = new List<Employee>();
+            Employee body = new Employee { name = "Navya", salary = "55000" };
+            request.AddParameter("application/json", body, ParameterType.RequestBody);
+            //Act
+            RestResponse response = client.Execute(request);
+            //Assert
+            Assert.AreEqual(response.StatusCode, HttpStatusCode.OK);
+            Employee data = JsonConvert.DeserializeObject<Employee>(response.Content);
+            Assert.AreEqual("Navya", data.name);
+            Assert.AreEqual("55000", data.salary);
+            Console.WriteLine(response.Content);
         }
 
 
