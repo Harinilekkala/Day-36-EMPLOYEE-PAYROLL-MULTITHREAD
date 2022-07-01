@@ -12,6 +12,8 @@ namespace RESTSharp_Testing
         public string salary { get; set; }
     }
     [TestClass]
+
+    //---Uc1 Test Cases
     public class RESTSharp
     {
         RestClient client;
